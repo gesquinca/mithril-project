@@ -32,8 +32,11 @@
     //     })
     // ])
 
+    // jsx
     return  <ul>
-              {people.map}
+              {people.map(function (person) {
+                return <li>{person.name}</li>;
+              })}
             </ul>
   }
 
