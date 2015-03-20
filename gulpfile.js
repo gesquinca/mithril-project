@@ -31,7 +31,19 @@ gulp.task('jshint', function () {
     .pipe($.if(!browserSync.active, $.jshint.reporter('fail')));
 });
 
-gulp.task('html', ['styles'], function () {
+gulp.task('transform-msx', function () {
+  return gulp.src('app/scripts/**/*.jsx') //msx?
+    .pipe($.msx({harmony: true}))
+    .pipe(gulp.dest('.tmp/scripts'));
+
+});
+// gulp.task('transform-jsx', function() {
+//   return gulp.src('./src/**/*.jsx')
+//     .pipe(msx({harmony: true}))
+//     .pipe(gulp.dest('./dist'))
+// })
+
+gulp.task('html', ['styles', 'transform-msx'], function () {
   var assets = $.useref.assets({searchPath: ['.tmp', 'app', '.']});
 
   return gulp.src('app/*.html')
@@ -75,7 +87,7 @@ gulp.task('extras', function () {
 
 gulp.task('clean', require('del').bind(null, ['.tmp', 'dist']));
 
-gulp.task('serve', ['styles', 'fonts'], function () {
+gulp.task('serve', ['styles', 'fonts', 'transform-msx'], function () {
   browserSync({
     open: false,
     notify: false,
@@ -92,10 +104,12 @@ gulp.task('serve', ['styles', 'fonts'], function () {
   gulp.watch([
     'app/*.html',
     'app/scripts/**/*.js',
+    '.tmp/scripts/**/*.js',
     'app/images/**/*',
     '.tmp/fonts/**/*'
   ]).on('change', reload);
 
+  gulp.watch('app/scripts/**/*.jsx', ['transform-msx']);
   gulp.watch('app/styles/**/*.scss', ['styles']);
   gulp.watch('app/fonts/**/*', ['fonts']);
   gulp.watch('bower.json', ['wiredep', 'fonts']);
