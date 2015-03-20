@@ -35,7 +35,9 @@
     // jsx
     return  <ul>
               {people.map(function (person) {
-                return <li>{person.name}</li>;
+                return <li class='class' key={person.id} onclick={fadesOut(ctrl.remove.bind(this, person))} config={fadesIn}>
+                  {person.name}
+                </li>
               })}
             </ul>
   }
